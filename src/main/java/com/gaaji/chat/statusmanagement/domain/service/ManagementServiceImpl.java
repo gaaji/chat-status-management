@@ -5,12 +5,10 @@ import com.gaaji.chat.statusmanagement.domain.entity.RoomId;
 import com.gaaji.chat.statusmanagement.domain.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ManagementServiceImpl implements ManagementService{
 
@@ -28,6 +26,13 @@ public class ManagementServiceImpl implements ManagementService{
         RoomId roomId = RoomId.of(_roomId);
 
         return chatRoomRepository.findById(roomId).orElseThrow();
+    }
+
+    @Override
+    public void deleteByRoomId(String _roomId) {
+        RoomId roomId = RoomId.of(_roomId);
+
+        chatRoomRepository.deleteById(roomId);
     }
 
 }

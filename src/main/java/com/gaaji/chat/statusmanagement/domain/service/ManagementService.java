@@ -10,4 +10,6 @@ public interface ManagementService {
 
     ChatRoom findByRoomId(String _roomId);
 
+    void deleteByRoomId(String _roomId);
+
 }
