@@ -12,4 +12,8 @@ public interface ManagementService {
 
     void deleteByRoomId(String _roomId);
 
+    void subscribe(String _roomId, String _memberId);
+
+    void unsubscribe(String _roomId, String _memberId);
+
 }

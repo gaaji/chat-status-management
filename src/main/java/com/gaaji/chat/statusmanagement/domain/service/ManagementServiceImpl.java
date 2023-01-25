@@ -35,4 +35,24 @@ public class ManagementServiceImpl implements ManagementService{
         chatRoomRepository.deleteById(roomId);
     }
 
+    @Override
+    public void subscribe(String _roomId, String _memberId) {
+        RoomId roomId = RoomId.of(_roomId);
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow();
+
+        chatRoom.updateMemberSubscribed(_memberId);
+
+        chatRoomRepository.save(chatRoom);
+    }
+
+    @Override
+    public void unsubscribe(String _roomId, String _memberId) {
+        RoomId roomId = RoomId.of(_roomId);
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow();
+
+        chatRoom.updateMemberUnsubscribed(_memberId);
+
+        chatRoomRepository.save(chatRoom);
+    }
+
 }
