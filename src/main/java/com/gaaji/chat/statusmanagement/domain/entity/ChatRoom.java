@@ -37,21 +37,24 @@ public class ChatRoom implements Serializable {
 
     public ChatRoom addMember(String memberId) {
         members.put(MemberId.of(memberId), Subscribe.create());
+
+        return this;
+    }
+
+    public ChatRoom removeMember(String memberId) {
+        members.remove(MemberId.of(memberId));
+
         return this;
     }
 
     public ChatRoom updateMemberSubscribed(String _memberId) {
-        MemberId memberId = MemberId.of(_memberId);
-
-        members.replace(memberId, Subscribe.subscribe());
+        members.replace(MemberId.of(_memberId), Subscribe.subscribe());
 
         return this;
     }
 
     public ChatRoom updateMemberUnsubscribed(String _memberId) {
-        MemberId memberId = MemberId.of(_memberId);
-
-        members.replace(memberId, Subscribe.unsubscribe());
+        members.replace(MemberId.of(_memberId), Subscribe.unsubscribe());
 
         return this;
     }
