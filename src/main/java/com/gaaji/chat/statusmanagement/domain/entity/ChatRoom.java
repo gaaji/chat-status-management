@@ -2,7 +2,6 @@ package com.gaaji.chat.statusmanagement.domain.entity;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -19,11 +18,9 @@ import java.util.Objects;
 public class ChatRoom implements Serializable {
 
     @Id
-    @NonNull
-    private RoomId roomId;
+    private final RoomId roomId;
 
-    @NonNull
-    private Map<MemberId, Subscribe> members;
+    private final Map<MemberId, Subscribe> members;
 
     public static ChatRoom create(String _roomId, List<String> _memberIds) {
         RoomId roomId = RoomId.of(_roomId);

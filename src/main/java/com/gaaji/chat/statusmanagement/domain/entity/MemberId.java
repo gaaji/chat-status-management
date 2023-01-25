@@ -10,7 +10,6 @@ import java.util.Objects;
 @RequiredArgsConstructor(staticName = "of")
 public class MemberId implements Serializable {
 
-
     private final String id;
 
     @Override
