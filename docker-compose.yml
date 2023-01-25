@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  redis:
+    image: redis
+    restart: always
+    container_name: redis-sm-gaaji
+    command: redis-server --port 6379
+    hostname: redis_standalone
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ~/data/redis/gaaji-market/chats:/data
