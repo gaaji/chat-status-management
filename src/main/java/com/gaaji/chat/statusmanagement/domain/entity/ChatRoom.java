@@ -22,14 +22,12 @@ public class ChatRoom implements Serializable {
 
     private final Map<MemberId, Subscribe> members;
 
-    public static ChatRoom create(String _roomId, List<String> _memberIds) {
-        RoomId roomId = RoomId.of(_roomId);
-
+    public static ChatRoom create(String roomId, List<String> memberIds) {
         Map<MemberId, Subscribe> members = new HashMap<>();
-        _memberIds.forEach(
+        memberIds.forEach(
                 memberId -> members.put(MemberId.of(memberId), Subscribe.create()));
 
-        return ChatRoom.of(roomId, members);
+        return ChatRoom.of(RoomId.of(roomId), members);
     }
 
     public ChatRoom addMember(String memberId) {
@@ -44,14 +42,14 @@ public class ChatRoom implements Serializable {
         return this;
     }
 
-    public ChatRoom updateMemberSubscribed(String _memberId) {
-        members.replace(MemberId.of(_memberId), Subscribe.subscribe());
+    public ChatRoom updateMemberSubscribed(String memberId) {
+        members.replace(MemberId.of(memberId), Subscribe.subscribe());
 
         return this;
     }
 
-    public ChatRoom updateMemberUnsubscribed(String _memberId) {
-        members.replace(MemberId.of(_memberId), Subscribe.unsubscribe());
+    public ChatRoom updateMemberUnsubscribed(String memberId) {
+        members.replace(MemberId.of(memberId), Subscribe.unsubscribe());
 
         return this;
     }
