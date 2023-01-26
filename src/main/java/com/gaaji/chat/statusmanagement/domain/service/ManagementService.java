@@ -31,6 +31,13 @@ public interface ManagementService {
     void deleteByRoomId(String _roomId);
 
     /**
+     * 채팅방을 삭제하는 메소드.
+     *
+     * @param chatRoom 채팅방
+     */
+    void deleteChatRoom(ChatRoom chatRoom);
+
+    /**
      * 특정 채팅방의 특정 유저의 웹소켓 구독 상태를
      * 구독으로 변경하는 메소드.
      *

@@ -52,11 +52,11 @@ public class ChatRoom implements Serializable {
         return this;
     }
 
-    public List<MemberId> getMemberIdsByUnsubscribe(String senderId) {
+    public List<String> getMemberIdsByUnsubscribe(String senderId) {
         return members.entrySet().stream()
                 .filter(e -> !e.getValue().getIsSubscribe())
                 .filter(e -> !Objects.equals(e.getKey().getId(), senderId))
-                .map(Map.Entry::getKey)
+                .map(e -> e.getKey().getId())
                 .collect(Collectors.toList());
     }
     

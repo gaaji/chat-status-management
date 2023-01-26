@@ -27,8 +27,15 @@ public class ManagementServiceImpl implements ManagementService{
     }
 
     @Override
-    public void deleteByRoomId(String _roomId) {
-        chatRoomRepository.deleteById(RoomId.of(_roomId));
+    public void deleteByRoomId(String roomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(RoomId.of(roomId)).orElseThrow();
+
+        deleteChatRoom(chatRoom);
+    }
+
+    @Override
+    public void deleteChatRoom(ChatRoom chatRoom) {
+        chatRoomRepository.delete(chatRoom);
     }
 
     @Override
