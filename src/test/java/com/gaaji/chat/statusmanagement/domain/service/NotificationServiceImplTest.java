@@ -1,7 +1,6 @@
 package com.gaaji.chat.statusmanagement.domain.service;
 
 import com.gaaji.chat.statusmanagement.domain.entity.ChatRoom;
-import com.gaaji.chat.statusmanagement.domain.entity.MemberId;
 import com.gaaji.chat.statusmanagement.domain.entity.RoomId;
 import com.gaaji.chat.statusmanagement.domain.repository.ChatRoomRepository;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +41,7 @@ class NotificationServiceImplTest {
         chatRoom.updateMemberSubscribed("member_5");
 
         // member_3이 발신자
-        List<MemberId> notificationMemberIds = chatRoom.getMemberIdsByUnsubscribe("member_3");
+        List<String> notificationMemberIds = chatRoom.getMemberIdsByUnsubscribe("member_3");
         Assertions.assertNotNull(notificationMemberIds);
         Assertions.assertEquals(5, notificationMemberIds.size());
     }

@@ -1,7 +1,8 @@
 package com.gaaji.chat.statusmanagement.domain.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gaaji.chat.statusmanagement.domain.controller.ChattedDto;
 import com.gaaji.chat.statusmanagement.domain.entity.ChatRoom;
-import com.gaaji.chat.statusmanagement.domain.entity.MemberId;
 import com.gaaji.chat.statusmanagement.domain.entity.RoomId;
 import com.gaaji.chat.statusmanagement.domain.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +15,15 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final KafkaService kafkaService;
 
     @Override
-    public void sendMessageNotification(String roomId, String senderId, String content) {
+    public void sendMessageNotification(String roomId, String senderId, String content) throws JsonProcessingException {
         ChatRoom chatRoom = chatRoomRepository.findById(RoomId.of(roomId)).orElseThrow();
 
-        List<MemberId> notificationMemberIds = chatRoom.getMemberIdsByUnsubscribe(senderId);
+        List<String> notificationMemberIds = chatRoom.getMemberIdsByUnsubscribe(senderId);
 
-        // member id 리스트를 루핑돌면서 Kafka 알림 메시지 발행
+        ChattedDto chattedDto = ChattedDto.of(roomId, senderId, notificationMemberIds, content);
+        kafkaService.sendMessageNotification(chattedDto);
     }
 }
