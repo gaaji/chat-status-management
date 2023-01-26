@@ -7,10 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @RedisHash("room")
@@ -54,6 +52,14 @@ public class ChatRoom implements Serializable {
         return this;
     }
 
+    public List<MemberId> getMemberIdsByUnsubscribe(String senderId) {
+        return members.entrySet().stream()
+                .filter(e -> !e.getValue().getIsSubscribe())
+                .filter(e -> !Objects.equals(e.getKey().getId(), senderId))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+    
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;
