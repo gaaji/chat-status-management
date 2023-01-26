@@ -1,4 +1,4 @@
-package com.gaaji.chat.statusmanagement.domain.controller;
+package com.gaaji.chat.statusmanagement.domain.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

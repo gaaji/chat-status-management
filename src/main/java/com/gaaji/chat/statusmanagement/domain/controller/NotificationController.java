@@ -2,6 +2,7 @@ package com.gaaji.chat.statusmanagement.domain.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gaaji.chat.statusmanagement.domain.controller.dto.ChattedDto;
 import com.gaaji.chat.statusmanagement.domain.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
