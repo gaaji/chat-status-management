@@ -2,16 +2,13 @@ package com.gaaji.chat.statusmanagement.domain.entity;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @RedisHash("room")
@@ -19,39 +16,50 @@ import java.util.Objects;
 public class ChatRoom implements Serializable {
 
     @Id
-    @NonNull
-    private RoomId roomId;
+    private final RoomId roomId;
 
-    @NonNull
-    private Map<MemberId, Subscribe> members;
+    private final Map<MemberId, Subscribe> members;
 
-    public static ChatRoom create(String _roomId, List<String> _memberIds) {
-        RoomId roomId = RoomId.of(_roomId);
-
+    public static ChatRoom create(String roomId, List<String> memberIds) {
         Map<MemberId, Subscribe> members = new HashMap<>();
-        _memberIds.forEach(
+        memberIds.forEach(
                 memberId -> members.put(MemberId.of(memberId), Subscribe.create()));
 
-        return ChatRoom.of(roomId, members);
+        return ChatRoom.of(RoomId.of(roomId), members);
     }
 
     public ChatRoom addMember(String memberId) {
         members.put(MemberId.of(memberId), Subscribe.create());
+
         return this;
     }
 
-    public ChatRoom updateMemberSubscribed(String _memberId) {
-        MemberId memberId = MemberId.of(_memberId);
-        members.replace(memberId, Subscribe.subscribe());
+    public ChatRoom removeMember(String memberId) {
+        members.remove(MemberId.of(memberId));
+
         return this;
     }
 
-    public ChatRoom updateMemberUnsubscribed(String _memberId) {
-        MemberId memberId = MemberId.of(_memberId);
-        members.replace(memberId, Subscribe.unsubscribe());
+    public ChatRoom updateMemberSubscribed(String memberId) {
+        members.replace(MemberId.of(memberId), Subscribe.subscribe());
+
         return this;
     }
 
+    public ChatRoom updateMemberUnsubscribed(String memberId) {
+        members.replace(MemberId.of(memberId), Subscribe.unsubscribe());
+
+        return this;
+    }
+
+    public List<MemberId> getMemberIdsByUnsubscribe(String senderId) {
+        return members.entrySet().stream()
+                .filter(e -> !e.getValue().getIsSubscribe())
+                .filter(e -> !Objects.equals(e.getKey().getId(), senderId))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+    
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;

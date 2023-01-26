@@ -1,7 +1,6 @@
 package com.gaaji.chat.statusmanagement.domain.entity;
 
 import lombok.Data;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.io.Serializable;
@@ -11,8 +10,7 @@ import java.util.Objects;
 @RequiredArgsConstructor(staticName = "of")
 public class RoomId implements Serializable {
 
-    @NonNull
-    private String id;
+    private final String id;
 
     @Override
     public boolean equals(Object o) {
