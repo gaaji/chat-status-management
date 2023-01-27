@@ -2,7 +2,7 @@ package com.gaaji.chat.statusmanagement.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gaaji.chat.statusmanagement.domain.controller.dto.ChattedDto;
+import com.gaaji.chat.statusmanagement.domain.controller.dto.ChatNotifiedDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -18,8 +18,8 @@ public class KafkaServiceImpl implements KafkaService{
     private static final String TOPIC_SEND_MESSAGE = "chat-chatNotified";
 
     @Override
-    public void sendMessageNotification(ChattedDto chattedDto) throws JsonProcessingException {
-        String message = objectMapper.writeValueAsString(chattedDto);
+    public void sendMessageNotification(ChatNotifiedDto chatNotifiedDto) throws JsonProcessingException {
+        String message = objectMapper.writeValueAsString(chatNotifiedDto);
 
         log.info("send kafka message - topic: {}, message: {}", TOPIC_SEND_MESSAGE, message);
         kafkaTemplate.send(TOPIC_SEND_MESSAGE, message);
