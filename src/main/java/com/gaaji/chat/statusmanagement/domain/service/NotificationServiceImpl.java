@@ -1,6 +1,7 @@
 package com.gaaji.chat.statusmanagement.domain.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.gaaji.chat.statusmanagement.domain.controller.dto.ChatNotifiedDto;
 import com.gaaji.chat.statusmanagement.domain.controller.dto.ChattedDto;
 import com.gaaji.chat.statusmanagement.domain.entity.ChatRoom;
 import com.gaaji.chat.statusmanagement.domain.entity.RoomId;
@@ -23,7 +24,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         List<String> notificationMemberIds = chatRoom.getMemberIdsByUnsubscribe(senderId);
 
-        ChattedDto chattedDto = ChattedDto.of(roomId, senderId, notificationMemberIds, content);
-        kafkaService.sendMessageNotification(chattedDto);
+        ChatNotifiedDto chatNotifiedDto = ChatNotifiedDto.of(roomId, senderId, notificationMemberIds, content);
+        kafkaService.sendMessageNotification(chatNotifiedDto);
     }
 }
