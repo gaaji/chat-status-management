@@ -1,34 +1,46 @@
 package com.gaaji.chat.statusmanagement.domain.service;
 
+import com.gaaji.chat.statusmanagement.domain.controller.dto.ChatRoomCreatedDto;
 import com.gaaji.chat.statusmanagement.domain.entity.ChatRoom;
 import com.gaaji.chat.statusmanagement.domain.entity.RoomId;
 import com.gaaji.chat.statusmanagement.domain.repository.ChatRoomRepository;
+import com.gaaji.chat.statusmanagement.global.errorhandler.ErrorHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ManagementServiceImpl implements ManagementService{
 
     private final ChatRoomRepository chatRoomRepository;
+    private final ErrorHandler errorHandler;
 
     @Override
-    public ChatRoom saveNewChatRoom(String _roomId, List<String> _memberIds) {
-        ChatRoom chatRoom = ChatRoom.create(_roomId, _memberIds);
+    public ChatRoom saveNewChatRoom(String roomId, List<String> memberIds) {
+        ChatRoom chatRoom = ChatRoom.create(roomId, memberIds);
 
         return chatRoomRepository.save(chatRoom);
     }
 
     @Override
-    public ChatRoom findByRoomId(String _roomId) {
-        return chatRoomRepository.findById(RoomId.of(_roomId)).orElseThrow();
+    public ChatRoom findByRoomId(String roomId) {
+        ChatRoom chatRoom;
+        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findById(RoomId.of(roomId));
+        if ( chatRoomOptional.isPresent() ) {
+            chatRoom = chatRoomOptional.get();
+        } else {
+            ChatRoomCreatedDto chatRoomCreatedDto = errorHandler.handleChatRoomIdNotFound(roomId);
+            chatRoom = saveNewChatRoom(chatRoomCreatedDto.getRoomId(), chatRoomCreatedDto.getMemberIds());
+        }
+        return chatRoom;
     }
 
     @Override
     public void deleteByRoomId(String roomId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(RoomId.of(roomId)).orElseThrow();
+        ChatRoom chatRoom = findByRoomId(roomId);
 
         deleteChatRoom(chatRoom);
     }
@@ -39,37 +51,37 @@ public class ManagementServiceImpl implements ManagementService{
     }
 
     @Override
-    public void subscribe(String _roomId, String _memberId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(RoomId.of(_roomId)).orElseThrow();
+    public void subscribe(String roomId, String memberId) {
+        ChatRoom chatRoom = findByRoomId(roomId);
 
-        chatRoom.updateMemberSubscribed(_memberId);
-
-        chatRoomRepository.save(chatRoom);
-    }
-
-    @Override
-    public void unsubscribe(String _roomId, String _memberId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(RoomId.of(_roomId)).orElseThrow();
-
-        chatRoom.updateMemberUnsubscribed(_memberId);
+        chatRoom.updateMemberSubscribed(memberId);
 
         chatRoomRepository.save(chatRoom);
     }
 
     @Override
-    public void addMemberToChatRoom(String _roomId, String _memberId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(RoomId.of(_roomId)).orElseThrow();
+    public void unsubscribe(String roomId, String memberId) {
+        ChatRoom chatRoom = findByRoomId(roomId);
 
-        chatRoom.addMember(_memberId);
+        chatRoom.updateMemberUnsubscribed(memberId);
 
         chatRoomRepository.save(chatRoom);
     }
 
     @Override
-    public void removeMemberFromChatRoom(String _roomId, String _memberId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(RoomId.of(_roomId)).orElseThrow();
+    public void addMemberToChatRoom(String roomId, String memberId) {
+        ChatRoom chatRoom = findByRoomId(roomId);
 
-        chatRoom.removeMember(_memberId);
+        chatRoom.addMember(memberId);
+
+        chatRoomRepository.save(chatRoom);
+    }
+
+    @Override
+    public void removeMemberFromChatRoom(String roomId, String memberId) {
+        ChatRoom chatRoom = findByRoomId(roomId);
+
+        chatRoom.removeMember(memberId);
 
         chatRoomRepository.save(chatRoom);
     }
