@@ -1,7 +1,7 @@
-package com.gaaji.chat.statusmanagement.global.config;
+package com.gaaji.chat.statusmanagement.global.config.redis;
 
-import com.gaaji.chat.statusmanagement.global.config.converter.MemberIdConversion;
-import com.gaaji.chat.statusmanagement.global.config.converter.RoomIdConversion;
+import com.gaaji.chat.statusmanagement.global.config.redis.converter.MemberIdConversion;
+import com.gaaji.chat.statusmanagement.global.config.redis.converter.RoomIdConversion;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Configuration
-//@EnableRedisRepositories
 public class RedisConfig {
 
     @Value("${spring.redis.host}")

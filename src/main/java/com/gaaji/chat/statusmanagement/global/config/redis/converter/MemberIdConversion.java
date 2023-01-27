@@ -1,4 +1,4 @@
-package com.gaaji.chat.statusmanagement.global.config.converter;
+package com.gaaji.chat.statusmanagement.global.config.redis.converter;
 
 import com.gaaji.chat.statusmanagement.domain.entity.MemberId;
 import org.springframework.core.convert.converter.Converter;
