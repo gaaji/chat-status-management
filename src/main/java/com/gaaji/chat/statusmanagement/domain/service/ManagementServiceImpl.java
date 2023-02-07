@@ -4,7 +4,7 @@ import com.gaaji.chat.statusmanagement.domain.controller.dto.ChatRoomCreatedDto;
 import com.gaaji.chat.statusmanagement.domain.entity.ChatRoom;
 import com.gaaji.chat.statusmanagement.domain.entity.RoomId;
 import com.gaaji.chat.statusmanagement.domain.repository.ChatRoomRepository;
-import com.gaaji.chat.statusmanagement.global.errorhandler.ErrorHandler;
+import com.gaaji.chat.statusmanagement.global.errorhandler.ResourceErrorHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ManagementServiceImpl implements ManagementService{
 
     private final ChatRoomRepository chatRoomRepository;
-    private final ErrorHandler errorHandler;
+    private final ResourceErrorHandler resourceErrorHandler;
 
     @Override
     public ChatRoom saveNewChatRoom(String roomId, List<String> memberIds) {
@@ -32,7 +32,7 @@ public class ManagementServiceImpl implements ManagementService{
         if ( chatRoomOptional.isPresent() ) {
             chatRoom = chatRoomOptional.get();
         } else {
-            ChatRoomCreatedDto chatRoomCreatedDto = errorHandler.handleChatRoomIdNotFound(roomId);
+            ChatRoomCreatedDto chatRoomCreatedDto = resourceErrorHandler.handleChatRoomIdNotFound(roomId);
             chatRoom = saveNewChatRoom(chatRoomCreatedDto.getRoomId(), chatRoomCreatedDto.getMemberIds());
         }
         return chatRoom;
