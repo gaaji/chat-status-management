@@ -15,7 +15,7 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @KafkaListener(topics = "chat-chatted")
+    @KafkaListener(topics = "chat-chatted", errorHandler = "kafkaExceptionHandler")
     public void sendMessageNotification(String body) throws JsonProcessingException {
         ChattedDto chattedDto = objectMapper.readValue(body, ChattedDto.class);
 
