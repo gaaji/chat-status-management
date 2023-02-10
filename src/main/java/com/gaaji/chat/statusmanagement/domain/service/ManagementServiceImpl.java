@@ -5,12 +5,16 @@ import com.gaaji.chat.statusmanagement.domain.entity.ChatRoom;
 import com.gaaji.chat.statusmanagement.domain.entity.RoomId;
 import com.gaaji.chat.statusmanagement.domain.repository.ChatRoomRepository;
 import com.gaaji.chat.statusmanagement.global.errorhandler.ResourceErrorHandler;
+import com.gaaji.chat.statusmanagement.global.exception.CSMException;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ManagementServiceImpl implements ManagementService{
@@ -27,15 +31,19 @@ public class ManagementServiceImpl implements ManagementService{
 
     @Override
     public ChatRoom findByRoomId(String roomId) {
-        ChatRoom chatRoom;
-        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findById(RoomId.of(roomId));
-        if ( chatRoomOptional.isPresent() ) {
-            chatRoom = chatRoomOptional.get();
-        } else {
-            ChatRoomCreatedDto chatRoomCreatedDto = resourceErrorHandler.handleChatRoomIdNotFound(roomId);
-            chatRoom = saveNewChatRoom(chatRoomCreatedDto.getRoomId(), chatRoomCreatedDto.getMemberIds());
-        }
-        return chatRoom;
+        return chatRoomRepository.findById(RoomId.of(roomId))
+                .or(() -> {
+                    try {
+                        ChatRoomCreatedDto chatRoomCreatedDto = resourceErrorHandler.handleChatRoomIdNotFound(roomId);
+                        return Optional.of(
+                            saveNewChatRoom(chatRoomCreatedDto.getRoomId(), chatRoomCreatedDto.getMemberIds())
+                        );
+                    } catch (FeignException e) {
+                        String msg = String.format("cannot retrieve chat room from chat-api; chat-room-id: %s", roomId);
+                        throw new CSMException(msg);
+                    }
+                }
+        ).orElseThrow();
     }
 
     @Override
